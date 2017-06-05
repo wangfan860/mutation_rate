@@ -1,6 +1,5 @@
 from itertools import islice
 import csv
-import io
 
 
 def fai_chunk(fai_path, blocksize):
@@ -49,7 +48,7 @@ def gc_element(chr, start, end, path):
     read gc5base from ucsc data, and calculate gc contents from intervals
     '''
     pos = {}
-    with io.BufferedReader(open(path, 'rb')) as handle:
+    with open(path, 'rb') as handle:
         value = []
         for line in handle:
             if not line.startswith("variableStep"):
@@ -64,7 +63,7 @@ def create_gc_csv(chr, fai_path, blocksize, input_file, output_file):
     '''
     calculate gc contents from intervals, and write to the output_file
     '''
-    with io.BufferedWriter(open(output_file, 'w')) as oh:
+    with open(output_file, 'w') as oh:
 	intervals = []
         for i, block in enumerate(fai_chunk(fai_path, blocksize)):
             if block[0] == chr:
