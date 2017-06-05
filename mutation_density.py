@@ -1,6 +1,6 @@
 from itertools import islice
 import csv
-
+import io
 
 
 def fai_chunk(fai_path, blocksize):
@@ -49,27 +49,31 @@ def gc_element(chr, start, end, path):
     read gc5base from ucsc data, and calculate gc contents from intervals
     '''
     pos = {}
-    with open(path, 'rb') as handle:
+    with io.BufferedReader(open(path, 'rb')) as handle:
         value = []
         for line in handle:
             if not line.startswith("variableStep"):
                 tmp = line.rstrip('\n').split("\t")
                 if int(start) <= int(tmp[0])& int(tmp[0]) +4 <= int(end):
                     value.append(float(tmp[1]))
-        pos['%s:%s-%s' % (chr, start, end)] = float(sum(value))/20/float(end + 1 - start)
+    handle.close()	
+    pos['%s:%s-%s' % (chr, start, end)] = float(sum(value))/20/float(end + 1 - start)
     return pos
 
 def create_gc_csv(chr, fai_path, blocksize, input_file, output_file):
     '''
     calculate gc contents from intervals, and write to the output_file
     '''
-    with open(output_file, 'w') as oh:
+    with io.BufferedWriter(open(output_file, 'w')) as oh:
+	intervals = []
         for i, block in enumerate(fai_chunk(fai_path, blocksize)):
             if block[0] == chr:
-                gc = gc_element(block[0], block[1], block[2], input_file)
-                value = gc['%s:%s-%s' % (block[0], block[1], block[2])]
-                c = '%s:%s-%s, %s\n' % (block[0], block[1], block[2], value)
-                oh.writelines(c)
+		intervals.append(block)
+	for block in intervals:
+       	    gc = gc_element(block[0], block[1], block[2], input_file)
+            value = gc['%s:%s-%s' % (block[0], block[1], block[2])]
+            c = '%s:%s-%s, %s\n' % (block[0], block[1], block[2], value)
+            oh.writelines(c)
     oh.close()
 
 def feature_element(chr, start, end, path):
