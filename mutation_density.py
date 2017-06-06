@@ -44,17 +44,25 @@ def create_density_csv(fai_path, blocksize, input_file, output_file):
 
 def gc_element(chr, start, end, path):
     '''
-    read gc5base from ucsc data, and calculate gc contents from intervals
+    read gcdata from bioconductor, and calculate gc contents from intervals
     '''
     pos = {}
     with io.open(path, 'rb') as handle:
         value = []
         for line in handle:
-            if not line.startswith("variableStep"):
-                tmp = line.rstrip('\n').split("\t")
-                if int(start) <= int(tmp[0]) & int(tmp[0]) + 4 <= int(end):
-                    value.append(float(tmp[1]))	
-    pos['%s:%s-%s' % (chr, start, end)] = float(sum(value))/20/float(end + 1 - start)
+     	    tmp = line.rstrip('\n').split(",")
+	    c = True
+	    if tmp[0] == chr:
+		if int(tmp[1]) >= start and int(tmp[2]) <= end:
+			c = True
+		else:
+		    c = False
+	    else:
+		c = False
+	    if c:
+		num = (int(tmp[2]) + 1 - int(tmp[1])) * float(tmp[3])
+	    	value.append(num)
+    pos['%s:%s-%s' % (chr, start, end)] = float(sum(value))/float(end + 1 - start)
     return pos
 
 def create_gc_csv(chr, fai_path, blocksize, input_file, output_file):
