@@ -1,6 +1,7 @@
 from itertools import islice
 import csv
 import io
+import os
 
 def create_bed(input):
     output = os.path.basename(input).rsplit('.', 4)[0] + '.hg19.bed'
