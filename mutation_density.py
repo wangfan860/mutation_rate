@@ -2,6 +2,18 @@ from itertools import islice
 import csv
 import io
 
+def create_bed(input):
+    output = os.path.basename(input).rsplit('.', 4)[0] + '.hg19.bed'
+    g = open(output, 'w')
+    with open(input, 'r') as fh:
+        file = fh.read().splitlines()
+        for i in file:
+            line = i.split("\t")
+            chr = "chr" + str(line[0])
+            startpoint = str(line[1])
+            endpoint = str(int(line[1]) + 1)
+            g.write("%s\t%s\t%s\n" % (chr, startpoint, endpoint))
+
 def fai_chunk(fai_path, blocksize):
     '''
     read reference index .fai file as input, and use blocksize (e.g. 1 million bases = 1000000)
