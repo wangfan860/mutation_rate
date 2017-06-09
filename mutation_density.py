@@ -121,7 +121,7 @@ def feature_element(chr, start, end, path):
 
 def create_feature_csv(chr, fai_path, blocksize, input_file, output_file):
     '''
-    calculate gc contents from intervals, and write to the output_file
+    calculate gene feature from intervals, and write to the output_file
     '''
     with open(output_file, 'w') as oh:
         for i, block in enumerate(fai_chunk(fai_path, blocksize)):
