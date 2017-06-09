@@ -36,7 +36,7 @@ grep 'gene_type \"protein_coding\"' gencode.v19.annotation.gtf >> protein_coding
 for i in range(22):
     n = str(i + 1)
     print 'processing chr%s.utr.csv' % n
-    md.create_gc_csv('chr' + n, 'ucsc.hg19.fasta.fai', 1000000, 'utr.gtf', 'chr'+n+'.utr.csv')
+    md.create_feature_csv('chr' + n, 'ucsc.hg19.fasta.fai', 1000000, 'utr.gtf', 'chr'+n+'.utr.csv')
     print 'chr%s is done' % n
 ```
 ###install R 3.2.1, bioconductor, SomatiCA to get 10000 base window GC content. need to modify the output format to run next step. (remove first column)
